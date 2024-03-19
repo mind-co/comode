@@ -226,7 +226,7 @@ fn main() {
                 continue;
             }
             "search\n" => {
-                println!("searching...");
+                repl_mode = ReplMode::Search;
                 continue;
             }
             "help\n" => {
