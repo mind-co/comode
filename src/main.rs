@@ -225,8 +225,26 @@ fn main() {
                 println!("username: {}", user.username);
                 continue;
             }
+            "think\n" => {
+                repl_mode = ReplMode::Think;
+                co_say(
+                    &format!(
+                        "you're in {} mode. type a new thought to send to comind",
+                        repl_mode.prompt(&colors)
+                    ),
+                    &colors,
+                );
+                continue;
+            }
             "search\n" => {
                 repl_mode = ReplMode::Search;
+                co_say(
+                    &format!(
+                        "you're in {} mode. go find something cool. maybe we have what you're looking for.",
+                        repl_mode.prompt(&colors)
+                    ),
+                    &colors,
+                );
                 continue;
             }
             "help\n" => {
