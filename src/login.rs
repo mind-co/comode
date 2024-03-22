@@ -7,12 +7,28 @@ use std::{
 // For talking to the server https
 use reqwest;
 
-use crate::{colors::ComindColors, display::co_say, User};
+use crate::types::{self, User};
+use crate::{colors::ComindColors, display::co_say};
 
 pub fn login() -> Option<User> {
     let entry = Entry::new("comind", "token").unwrap();
     let mut username = String::new();
     let mut password = String::new();
+
+    // Check if the user is already logged in.
+    // If they are, return the user.
+    // If this fails, try to clear the token from the keyring
+    // and continue with the login process.
+    let token = entry.get_password();
+    if let Ok(token) = token {
+        let user = crate::types::User::create_from_entry(&entry);
+        return Some(user.unwrap());
+    } else {
+        if let Err(e) = token {
+            println!("Error: {}", e);
+            entry.delete_password().unwrap();
+        }
+    }
 
     // TODO #1 make username and password input secure
     print!("Enter your username: ");
@@ -52,7 +68,7 @@ pub fn login() -> Option<User> {
     entry.set_password(&token).unwrap();
 
     // Create a user from the entry
-    let user = crate::User::create_from_entry(&entry);
+    let user = crate::types::User::create_from_entry(&entry);
     return Some(user.unwrap());
 }
 
